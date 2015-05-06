@@ -136,7 +136,7 @@
 		      controllerAs: 'canvas',
 		      template:[
 		      	'<div style="position:relative">',
-		      		'<canvas id="myCanvas" height="300"></canvas>',
+		      		'<canvas class="myCanvas" height="300"></canvas>',
 		      		'<div class="signature-canvas-btn signature-canvas-btn-left" ng-click="canvas.clearCanvas()">',
 		      			'<button type="button" class="btn btn-default btn-lg">',
 		      				'<span class="glyphicon glyphicon-repeat"></span>',
