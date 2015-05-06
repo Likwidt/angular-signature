@@ -14,7 +14,7 @@
 
 	}
 
-	angular.module('app', ['ngResource', 'ui.router', 'ui.bootstrap'])
+	angular.module('app', ['ngResource', 'ui.router', 'ui.bootstrap', 'angular-signature'])
 		.config(['$compileProvider', '$stateProvider', '$urlRouterProvider', appConfig]);
 
 })();
