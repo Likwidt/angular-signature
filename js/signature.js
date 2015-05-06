@@ -8,12 +8,12 @@
 			var canvasCoords = $scope.canvasElem.getBoundingClientRect(),
 				canvasContext = $scope.canvasElem.getContext('2d');
 			canvasContext.clearRect ( 0 , 0 , canvasCoords.width , canvasCoords.height );
-			CanvasCtrl.saveSignature($scope.canvasElem.toDataURL('image/png'));
+			SignatureFactory.setImage($scope.canvasElem.toDataURL('image/png'));
 		}
 
 		CanvasCtrl.saveSignature = function( newImage ){
 			SignatureFactory.setImage(newImage);
-			$scope.$apply();
+			$scope.$apply()
 		}
 	}
 

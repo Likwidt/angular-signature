@@ -6,9 +6,8 @@
 	function MainCtrl( SignatureFactory ){
 		var MainCtrl = this;
 
-
 		MainCtrl.image = SignatureFactory.image;
-		MainCtrl.setImage = SignatureFactory.setImage;
+		//MainCtrl.setImage = SignatureFactory.setImage;
 	}
 
 	angular	.module('app')
