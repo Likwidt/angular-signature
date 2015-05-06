@@ -5,11 +5,10 @@
 		var CanvasCtrl = this;
 
 		CanvasCtrl.clearCanvas = function(){
-			SignatureFactory.setImage('');
 			var canvasCoords = $scope.canvasElem.getBoundingClientRect(),
 				canvasContext = $scope.canvasElem.getContext('2d');
 			canvasContext.clearRect ( 0 , 0 , canvasCoords.width , canvasCoords.height );
-			$scope.$apply();
+			CanvasCtrl.saveSignature($scope.canvasElem.toDataURL('image/png'));
 		}
 
 		CanvasCtrl.saveSignature = function( newImage ){
