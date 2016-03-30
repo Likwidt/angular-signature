@@ -1,13 +1,13 @@
 # tb-free-draw
-Simple canvas allows drawing lines with touchscreen and exports to model as png
+Simple canvas allows drawing lines with touchscreen and exports to model as png.
 
 ## Example
 
 	<canvas draw-to="yourModel" tb-free-draw></canvas>
 
 
-Initialize by adding the tb-free-draw attribute to a <canvas> tag.
+Initialize by adding the **tb-free-draw** attribute to a <canvas> tag.
 
-Use "draw-to" attribute to bind controller model.
+Use **draw-to** attribute to bind controller model.
 
-Set controller model to "null" to reset canvas.
+Set controller model used in **draw-to** to *null* to reset canvas.
