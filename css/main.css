@@ -1,8 +1,8 @@
-.myCanvas{
+.tb-signature-canvas{
   border: 1px solid black;
 }
 
-.signature-canvas-btn{
+.tb-signature-canvas-btn{
   position:absolute;
   bottom: 0;
 }

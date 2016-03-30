@@ -2,148 +2,143 @@
 	"use strict";
 
 	function CanvasCtrl( $scope, SignatureFactory ){
-		var CanvasCtrl = this;
+		var ctrl = this;
 
-		CanvasCtrl.clearCanvas = function(){
+		ctrl.setImage = SignatureFactory.setImage;
+
+		ctrl.clearCanvas = function(){
 			var canvasCoords = $scope.canvasElem.getBoundingClientRect(),
 				canvasContext = $scope.canvasElem.getContext('2d');
 			canvasContext.clearRect ( 0 , 0 , canvasCoords.width , canvasCoords.height );
 			SignatureFactory.setImage($scope.canvasElem.toDataURL('image/png'));
 		}
 
-		CanvasCtrl.saveSignature = function( newImage ){
-			SignatureFactory.setImage(newImage);
-			$scope.$apply()
-		}
+		
 	}
 
-	function signatureCanvasHandler(scope, element, attrs, controllers){
-		var canvas = element.context.querySelector('canvas'), //canvas,
-			context = canvas.getContext('2d'); //context
+	function signatureCanvasHandler(scope, element, attrs, ctrl){
+		var canvas = element[0];
 
-		function cropImageFromCanvas(ctx, canvas) {
-			var newCanvas = canvas,
-				newContext = ctx;
+		if (canvas.nodeName === 'CANVAS') {
+			initCanvas();
+		}
 
-			var w = newCanvas.width,
-				h = newCanvas.height,
-				pix = {x:[], y:[]},
-				imageData = newContext.getImageData(0,0,newCanvas.width,newCanvas.height),
-				x, y, index;
+		function initCanvas() {
 
-			for (y = 0; y < h; y++) {
-			    for (x = 0; x < w; x++) {
-			        index = (y * w + x) * 4;
-			        if (imageData.data[index+3] > 0) {
+			var context = canvas.getContext('2d'); //context
 
-			            pix.x.push(x);
-			            pix.y.push(y);
-
-			        }   
-			    }
+			// draw function
+			function draw (e){
+				var event = e.changedTouches[0],
+					canvasPosition = canvas.getBoundingClientRect();
+				e.preventDefault();
+				context.lineTo( ( event.clientX - canvasPosition.left ), ( event.clientY - canvasPosition.top ) ); // point to relative position
+				context.stroke();		
 			}
 
-			pix.x.sort(function(a,b){return a-b});
-			pix.y.sort(function(a,b){return a-b});
-			var n = pix.x.length-1;
+			function stopDrawing (e){	
+				canvas.removeEventListener('touchmove', draw, false); //remove draw command			
+				//point link to new image file as soon as finished drawing
+				ctrl.setImage(canvas.toDataURL('image/png')); 
+			}	
 
-			w = pix.x[n] - pix.x[0];
-			h = pix.y[n] - pix.y[0];
-			var cut = newContext.getImageData(pix.x[0], pix.y[0], w, h);
+			function initDraw(e) {
+				var event = e.changedTouches[0];
+				context.moveTo(event.pageX, event.pageY); //place context
+				context.beginPath(); //begin path
+				canvas.addEventListener('touchmove', draw, false); //draw line on move event
+				canvas.addEventListener('touchend', stopDrawing, false); //stop drawing on end event
+				canvas.addEventListener('touchleave', stopDrawing, false); //stop drawing on out event
+			}
 
-			newCanvas.width = w;
-			newCanvas.height = h;
-			newContext.putImageData(cut, 0, 0);
 
-			var image = newCanvas.toDataURL();
-			return image;
+			// initiate drawing on start event		
+			canvas.addEventListener('touchstart', initDraw, false);
+			scope.canvasElem = canvas;
+
+			function cropImageFromCanvas(ctx, canvas) {
+				var newCanvas = canvas,
+					newContext = ctx,
+				  	canvasWidth = newCanvas.width,
+					canvasHeight = newCanvas.height,
+					pix = {x:[], y:[]},
+					imageData = newContext.getImageData(0,0,canvasWidth,canvasHeight),
+					x, y, index;
+
+				for (y = 0; y < canvasHeight; y++) {
+				    for (x = 0; x < canvasWidth; x++) {
+				        index = (y * canvasWidth + x) * 4;
+				        if (imageData.data[index+3] > 0) {
+
+				            pix.x.push(x);
+				            pix.y.push(y);
+
+				        }   
+				    }
+				}
+
+				pix.x.sort(function(a,b){return a-b});
+				pix.y.sort(function(a,b){return a-b});
+				var n = pix.x.length-1;
+
+				canvasWidth = pix.x[n] - pix.x[0];
+				canvasHeight = pix.y[n] - pix.y[0];
+				var cut = newContext.getImageData(pix.x[0], pix.y[0], canvasWidth, canvasHeight);
+
+				newCanvas.width = canvasWidth;
+				newCanvas.height = canvasHeight;
+				newContext.putImageData(cut, 0, 0);
+
+				var image = newCanvas.toDataURL('image/png');
+				return image;
+
+			}
+
+
+			//set canvas size to max
+
+			/*window.onresize = function(e){
+				var width = window.innerWidth * 0.8;
+				var height = window.innerHeight / 4;
+				canvas.setAttribute('width', width);
+				canvas.setAttribute('height', height);
+			}
+			
+			$(window).trigger('resize');*/
+
+			
 
 		}
-
-
-		//set canvas size to max
-
-		window.onresize = function(e){
-			var width = window.innerWidth * 0.8;
-			var height = window.innerHeight / 4;
-			canvas.setAttribute('width', width);
-			canvas.setAttribute('height', height);
-		}
-		
-		$(window).trigger('resize');
-
-		// TODO: find better way to suspend scrolling 
-		canvas.ontouchmove = function(e){ 
-    		e.preventDefault(); 
-		}	
-
-				// draw function
-		function draw (e){
-			var event = e.changedTouches[0],
-				canvasPosition = canvas.getBoundingClientRect();
-			context.lineTo( ( event.pageX - canvasPosition.left ), ( event.pageY - canvasPosition.top ) ); // point to relative position
-			context.stroke();		
-		}
-
-		function stopDrawing (e){		
-			canvas.removeEventListener('touchmove', draw, false); //remove draw command			
-			//point link to new image file as soon as finished drawing
-			controllers.saveSignature(canvas.toDataURL('image/png')); 
-		}	
-
-
-		// initiate drawing on start event		
-		canvas.addEventListener('touchstart', function(e){
-			var event = e.changedTouches[0];
-			context.moveTo(event.pageX, event.pageY); //place context
-			context.beginPath(); //begin path
-			canvas.addEventListener('touchmove', draw, false); //draw line on move event
-			canvas.addEventListener('touchend', stopDrawing, false); //stop drawing on end event
-			canvas.addEventListener('touchleave', stopDrawing, false); //stop drawing on out event
-		}, false);
-
-		scope.canvasElem = canvas;
 
 	}
 
-	function SignatureFactory ( ){
-		var SignatureFactory = this;
+	function SignatureFactory ($rootScope){
+		var factory = {};
 
-		SignatureFactory.image = {
-			src: ''
-		};
+		factory.image = {src: ''};
+		factory.setImage = setImage;
 
-		SignatureFactory.setImage = function( newImage ){
-			SignatureFactory.image.src = newImage;
+		function setImage( newImage ){
+			$rootScope.$apply(function() {
+				factory.image.src = newImage;
+			});
+		}
 
-		};
-
-		return SignatureFactory;
-
+		return factory;
 	}
 
 
 
 	angular.module('angular-signature', [])
 		.controller('CanvasCtrl', ['$scope', 'SignatureFactory', CanvasCtrl])
-		.factory('SignatureFactory', [SignatureFactory])
+		.factory('SignatureFactory', ['$rootScope', SignatureFactory])
 		.directive('signatureCanvas', [function() {    
 		    return {
-		      restrict: 'E',
-		      transclude: true,
+		      restrict: 'A',
+		      replace: false,
 		      scope: { signature : '=' },
 		      controller: 'CanvasCtrl',
 		      controllerAs: 'canvas',
-		      template:[
-		      	'<div style="position:relative">',
-		      		'<canvas class="myCanvas" height="300"></canvas>',
-		      		'<div class="signature-canvas-btn signature-canvas-btn-left" ng-click="canvas.clearCanvas()">',
-		      			'<button type="button" class="btn btn-default btn-lg">',
-		      				'<span class="glyphicon glyphicon-repeat"></span>',
-		      			'</button>',
-		      		'</div>',
-		      	'</div>'
-		      ].join(''),
 		      link: signatureCanvasHandler
 		    };
 		}]);		
