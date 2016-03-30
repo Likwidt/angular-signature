@@ -3,15 +3,14 @@
 (function(){
 	"use strict";
 
-	function MainCtrl( SignatureFactory ){
+	function MainCtrl(){
 		var MainCtrl = this;
 
-		MainCtrl.image = SignatureFactory.image;
-		MainCtrl.setImage = SignatureFactory.setImage;
+		MainCtrl.image = '';
 	}
 
 	angular	.module('app')
-			.controller('MainCtrl', ['SignatureFactory', MainCtrl]);
+			.controller('MainCtrl', [MainCtrl]);
 
 
 
