@@ -5,8 +5,8 @@
 		.directive('tbFreeDraw', ['$timeout', function($timeout) {    
 			return {
 				restrict: 'A',
-				scope: { signature : '=' },
-				link: function freeDrawCanvasHandler(scope, element, attrs, ctrl){
+				scope: { drawTo : '=' },
+				link: function freeDrawCanvasHandler(scope, element){
 					var canvas = element[0];
 
 					if (canvas.nodeName === 'CANVAS') {
@@ -43,7 +43,7 @@
 
 						function setImage(newImage) {
 							scope.$apply(function() {
-								scope.signature = newImage;
+								scope.drawTo = newImage;
 							});
 						}
 
@@ -54,7 +54,7 @@
 							setImage(canvas.toDataURL('image/png'));
 						}
 
-						scope.$watch('signature', function(n, o) {
+						scope.$watch('drawTo', function(n, o) {
 							if (n === null) {
 								$timeout(clearCanvas, 0);
 							}
