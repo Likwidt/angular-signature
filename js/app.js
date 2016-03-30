@@ -14,7 +14,7 @@
 
 	}
 
-	angular.module('app', ['ngResource', 'ui.router', 'ui.bootstrap', 'angular-signature'])
+	angular.module('app', ['ngResource', 'ui.router', 'ui.bootstrap', 'tb-free-draw'])
 		.config(['$compileProvider', '$stateProvider', '$urlRouterProvider', appConfig]);
 
 })();

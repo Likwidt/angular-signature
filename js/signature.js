@@ -1,7 +1,7 @@
 (function(){
 	"use strict";
 
-	function signatureCanvasHandler(scope, element, attrs, ctrl){
+	function freeDrawCanvasHandler(scope, element, attrs, ctrl){
 		var canvas = element[0];
 
 		if (canvas.nodeName === 'CANVAS') {
@@ -58,12 +58,12 @@
 
 	}
 
-	angular.module('angular-signature', [])
-		.directive('signatureCanvas', [function() {    
+	angular.module('tb-free-draw', [])
+		.directive('tbFreeDraw', [function() {    
 		    return {
 		      restrict: 'A',
 		      scope: { signature : '=' },
-		      link: signatureCanvasHandler
+		      link: freeDrawCanvasHandler
 		    };
 		}]);		
 
