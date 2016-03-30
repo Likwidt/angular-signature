@@ -3,17 +3,17 @@
 (function(){
 	"use strict";
 
-	function MainCtrl(){
+	function MainCtrl($scope){
 		var MainCtrl = this;
 
 		MainCtrl.image = '';
 		MainCtrl.clearCanvas = function() {
-			MainCtrl.image = null;
+			$scope.$broadcast('tb.freedraw.clear');
 		}
 	}
 
 	angular	.module('app')
-			.controller('MainCtrl', [MainCtrl]);
+			.controller('MainCtrl', ['$scope', MainCtrl]);
 
 
 

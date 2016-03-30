@@ -51,14 +51,11 @@
 							var canvasCoords = canvas.getBoundingClientRect(),
 								canvasContext = canvas.getContext('2d');
 							canvasContext.clearRect ( 0 , 0 , canvasCoords.width , canvasCoords.height );
-							setImage(canvas.toDataURL('image/png'));
+							$timeout(function() {setImage(canvas.toDataURL('image/png'))}, 0);
 						}
 
-						scope.$watch('drawTo', function(n, o) {
-							if (n === null) {
-								$timeout(clearCanvas, 0);
-							}
-						});
+						scope.$on('tb.freedraw.clear', clearCanvas);
+
 						// initiate drawing on start event		
 						canvas.addEventListener('touchstart', initDraw, false);
 					}
