@@ -10,4 +10,4 @@ Initialize by adding the **tb-free-draw** attribute to a <canvas> tag.
 
 Use **draw-to** attribute to bind controller model.
 
-Set controller model used in **draw-to** to *null* to reset canvas.
+**$broadcast** the event *tb.freedraw.clear* to clear the directive; 
