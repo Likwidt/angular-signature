@@ -7,6 +7,9 @@
 		var MainCtrl = this;
 
 		MainCtrl.image = '';
+		MainCtrl.clearCanvas = function() {
+			MainCtrl.image = null;
+		}
 	}
 
 	angular	.module('app')
